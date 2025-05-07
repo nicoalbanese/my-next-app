@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function Home() {
   const [todos, setTodos] = useState<string[]>([]);
@@ -40,18 +41,28 @@ export default function Home() {
           {todos.length === 0 && (
             <li className="text-zinc-400 text-center">No todos yet.</li>
           )}
-          {todos.map((todo, idx) => (
-            <li key={idx} className="flex items-center justify-between bg-zinc-50 dark:bg-zinc-800 rounded px-3 py-2">
-              <span>{todo}</span>
-              <button
-                onClick={() => removeTodo(idx)}
-                className="text-zinc-400 hover:text-red-500 transition-colors text-sm"
-                aria-label={`Remove todo: ${todo}`}
+          <AnimatePresence initial={false}>
+            {todos.map((todo, idx) => (
+              <motion.li
+                key={todo + idx}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, x: 40 }}
+                transition={{ duration: 0.18 }}
+                className="flex items-center justify-between bg-zinc-50 dark:bg-zinc-800 rounded px-3 py-2"
+                layout
               >
-                Remove
-              </button>
-            </li>
-          ))}
+                <span>{todo}</span>
+                <button
+                  onClick={() => removeTodo(idx)}
+                  className="text-zinc-400 hover:text-red-500 transition-colors text-sm"
+                  aria-label={`Remove todo: ${todo}`}
+                >
+                  Remove
+                </button>
+              </motion.li>
+            ))}
+          </AnimatePresence>
         </ul>
       </div>
     </main>
